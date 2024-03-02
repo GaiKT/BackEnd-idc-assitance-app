@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import authRouter from "./apps/auth.js";
 import dotenv from "dotenv";
+import aupRouter from "./apps/aup.js";
 
 async function init() {
   dotenv.config();
@@ -13,6 +14,7 @@ async function init() {
   app.use(bodyParser.json());
   app.use(cors());
   app.use("/auth", authRouter);
+  app.use("/aup", aupRouter);
 
   app.get("/", (req, res) => {
     res.send("Hello World!");

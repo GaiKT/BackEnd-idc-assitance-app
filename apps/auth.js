@@ -56,8 +56,9 @@ authRouter.post("/login", async (req, res) => {
 
   const token = jwt.sign({
       id: user.rows[0].user_id,
-      firstName: user.rows[0].firstName,
-      lastName: user.rows[0].lastName,
+      firstName: user.rows[0].firstname,
+      lastName: user.rows[0].lastname,
+      UserName: user.rows[0].username
     },
     process.env.SECRET_KEY,
     {
