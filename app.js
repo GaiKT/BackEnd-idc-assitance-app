@@ -4,6 +4,7 @@ import cors from "cors";
 import authRouter from "./apps/auth.js";
 import dotenv from "dotenv";
 import aupRouter from "./apps/aup.js";
+import companyRouter from "./apps/company.js";
 
 async function init() {
   dotenv.config();
@@ -15,6 +16,7 @@ async function init() {
   app.use(cors());
   app.use("/auth", authRouter);
   app.use("/aup", aupRouter);
+  app.use("/company",companyRouter);
 
   app.get("/", (req, res) => {
     res.send("Hello World!");

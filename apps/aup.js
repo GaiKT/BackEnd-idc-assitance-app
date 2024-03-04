@@ -20,7 +20,8 @@ aupRouter.get("/", async (req, res) => {
                 m.date_of_sign,
                 m.created_at,
                 m.card_id,
-                c.comp_name,
+                c.comp_name_eng,
+                c.comp_name_thai,
                 t.teamname,
                 t.team_id
             FROM
@@ -31,7 +32,8 @@ aupRouter.get("/", async (req, res) => {
                 m.first_name ILIKE $1 OR
                 m.last_name ILIKE $1 OR
                 m.address ILIKE $1 OR
-                c.comp_name ILIKE $1 OR
+                c.comp_name_eng ILIKE $1 OR
+                c.comp_name_thai ILIKE $1 OR
                 t.teamname ILIKE $1;`, [`%${keyword}%`]
             );
             return res.json({
@@ -55,7 +57,8 @@ aupRouter.get("/", async (req, res) => {
                 m.date_of_sign,
                 m.created_at,
                 m.card_id,
-                c.comp_name,
+                c.comp_name_eng,
+                c.comp_name_thai,
                 t.teamname,
                 t.team_id
             FROM
@@ -79,20 +82,24 @@ aupRouter.get("/company",async(req,res)=>{
     try {
         const result = await pool.query(`
         SELECT
-        teams.team_id,
-        teams.teamname,
-        ARRAY_AGG(
-            json_build_object(
-                'comp_id', company.comp_id,
-                'comp_name', company.comp_name
-            )
-        ) AS company_info
+            teams.team_id,
+            teams.teamname,
+            COALESCE(
+                ARRAY_AGG(
+                    json_build_object(
+                        'comp_id', company.comp_id,
+                        'comp_name_eng', company.comp_name_eng,
+                        'comp_name_thai', company.comp_name_thai
+                    )
+                ),
+                '{}'::json[]
+            ) AS company_info
         FROM
             teams
-        INNER JOIN
+        LEFT JOIN
             company ON teams.team_id = company.team_id
         GROUP BY
-            teams.team_id;
+            teams.team_id, teams.teamname;
         `) 
 
         return res.json({
