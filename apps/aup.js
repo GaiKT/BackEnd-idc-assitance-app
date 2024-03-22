@@ -112,6 +112,50 @@ aupRouter.get("/company",async(req,res)=>{
     }
 })
 
+aupRouter.get("/new-members-weekly", async (req, res) => {
+    try {
+        let resultNewMembersWeekly = await pool.query(`
+            SELECT 
+                m.member_id,
+                m.comp_id,
+                m.first_name,
+                m.last_name,
+                m.address,
+                m.date_of_sign,
+                m.created_at,
+                m.card_id,
+                c.comp_name_eng,
+                c.comp_name_thai,
+                t.teamname,
+                t.team_id
+            FROM members m    
+            INNER JOIN company c ON m.comp_id = c.comp_id
+            INNER JOIN teams t ON c.team_id = t.team_id
+            WHERE date_of_sign BETWEEN CURRENT_DATE - INTERVAL '6 days' AND CURRENT_DATE
+            ORDER BY team_id
+        `);
+
+        let resultNewCompanyWeekly = await pool.query(`
+            SELECT * 
+            FROM company
+            WHERE created_at >= current_date - interval '6 days' AND created_at <= current_date + interval '1 day';
+        `);
+
+        console.log(resultNewCompanyWeekly)
+
+        return res.json({
+            data: {
+                newMembers: resultNewMembersWeekly.rows,
+                newCompany: resultNewCompanyWeekly.rows
+            }
+        });
+    } catch (error) {
+        console.error("Error in API endpoint /new-members-weekly:", error);
+        return res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
 aupRouter.post("/", async (req, res) => {
 
     const data = {

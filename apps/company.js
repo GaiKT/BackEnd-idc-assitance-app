@@ -47,6 +47,7 @@ companyRouter.post("/", async (req, res) => {
 
     const data = {
         ...req.body,
+        created_at : new Date() ,
     }
 
     if(!data){
@@ -57,12 +58,13 @@ companyRouter.post("/", async (req, res) => {
 
     try {
         let result = await pool.query(
-            `INSERT INTO company (comp_name_eng, comp_name_thai, team_id)
-            values ($1, $2, $3)`,
+            `INSERT INTO company (comp_name_eng, comp_name_thai, team_id, created_at)
+            values ($1, $2, $3, $4)`,
             [
                 data.companyEng,
                 data.companyThai,
                 data.team,
+                data.created_at,
             ]
             );
             return res.json({
@@ -80,9 +82,8 @@ companyRouter.put("/:id", async (req, res) => {
 
     const data = {
         ...req.body,
+        updated_at : new Date(),
     }
-
-    console.log(param)
 
     if (!data) {
         return res.json({
@@ -95,12 +96,14 @@ companyRouter.put("/:id", async (req, res) => {
             `UPDATE company 
             SET comp_name_eng = $1, 
                 comp_name_thai = $2, 
-                team_id = $3 
-            WHERE comp_id = $4`,
+                team_id = $3 ,
+                updated_at = $4
+            WHERE comp_id = $5`,
             [
                 data.companyEng,
                 data.companyThai,
                 data.team,
+                data.updated_at,
                 param 
             ]
         );
