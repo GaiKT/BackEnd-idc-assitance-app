@@ -5,6 +5,7 @@ import authRouter from "./apps/auth.js";
 import dotenv from "dotenv";
 import aupRouter from "./apps/aup.js";
 import companyRouter from "./apps/company.js";
+import checklistsRouter from "./apps/checklists.js";
 
 async function init() {
   dotenv.config();
@@ -17,6 +18,7 @@ async function init() {
   app.use("/auth", authRouter);
   app.use("/aup", aupRouter);
   app.use("/company",companyRouter);
+  app.use("/checklists",checklistsRouter);
 
   app.get("/", (req, res) => {
     res.send("Hello World!");

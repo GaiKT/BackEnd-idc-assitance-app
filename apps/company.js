@@ -112,7 +112,6 @@ companyRouter.put("/:id", async (req, res) => {
             message: "Company has been updated successfully",
         });
     } catch (error) {
-        console.error(error);
         return res.status(500).json({
             message: "Error can not update company",
             error: error.message
