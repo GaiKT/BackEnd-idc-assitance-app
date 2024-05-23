@@ -141,8 +141,6 @@ aupRouter.get("/new-members-weekly", async (req, res) => {
             WHERE created_at >= current_date - interval '6 days' AND created_at <= current_date + interval '1 day';
         `);
 
-        console.log(resultNewCompanyWeekly)
-
         return res.json({
             data: {
                 newMembers: resultNewMembersWeekly.rows,
@@ -200,8 +198,6 @@ aupRouter.put("/:id", async (req, res) => {
         ...req.body,
         updated_at: new Date()
     }
-
-    console.log(param)
 
     if (!data) {
         return res.json({
