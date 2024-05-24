@@ -136,17 +136,48 @@ aupRouter.get("/new-members-weekly", async (req, res) => {
         `);
 
         let resultNewCompanyWeekly = await pool.query(`
-            SELECT * 
-            FROM company
+            SELECT c.* , t.teamname
+            FROM company c
+            INNER JOIN teams t ON c.team_id = t.team_id
             WHERE created_at >= current_date - interval '6 days' AND created_at <= current_date + interval '1 day';
         `);
 
-        console.log(resultNewCompanyWeekly)
+        let resultAvgRoomtemp = await pool.query(`
+            SELECT t.tr_ch1, t.tr_ch2, t.tr_ch3 , t.outside_temp , t.outside_hum , t.tr_room_temp , t.tr_room_hum
+            FROM checklistroomtemp t
+            ORDER BY created_at DESC
+            LIMIT 2;
+        `);
+
+        let resultAvgFdc = await pool.query(`
+            SELECT fdc.fdc_phase1 , fdc.fdc_phase2
+            FROM checklistfdc fdc
+            ORDER BY created_at DESC
+            LIMIT 2;
+        `);
+
+        let resultAvgPhase1 = await pool.query(`
+            SELECT p1.main_meter, p1.atsphase1_meter, p1.emdb_meter, p1.airdb_meter
+            FROM checklistphase1 p1
+            ORDER BY created_at DESC
+            LIMIT 2;
+        `);
+
+        let resultAvgPhase2 = await pool.query(`
+            SELECT p2.main_meter, p2.atsphase2_meter, p2.emdb_meter, p2.airdb_meter
+            FROM checklistphase2 p2
+            ORDER BY created_at DESC
+            LIMIT 2;
+        `);
 
         return res.json({
             data: {
                 newMembers: resultNewMembersWeekly.rows,
-                newCompany: resultNewCompanyWeekly.rows
+                newCompany: resultNewCompanyWeekly.rows,
+                avgTranformer : resultAvgRoomtemp.rows,
+                newfdc : resultAvgFdc.rows,
+                avgPhase1 : resultAvgPhase1.rows,
+                avgPhase2 : resultAvgPhase2.rows,
             }
         });
     } catch (error) {
@@ -200,8 +231,6 @@ aupRouter.put("/:id", async (req, res) => {
         ...req.body,
         updated_at: new Date()
     }
-
-    console.log(param)
 
     if (!data) {
         return res.json({
