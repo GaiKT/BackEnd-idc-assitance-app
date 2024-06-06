@@ -232,6 +232,12 @@ aupRouter.put("/:id", async (req, res) => {
         updated_at: new Date()
     }
 
+    if(!param) {
+        return res.json({
+            message: 'Update failed. This request does not have param ID.',
+        });
+    }
+
     if (!data) {
         return res.json({
             message: 'Update failed. This request does not have data.',
@@ -239,27 +245,22 @@ aupRouter.put("/:id", async (req, res) => {
     }
 
     try {
-        await pool.query(
-            `UPDATE members 
-            SET comp_id = $1, 
-                first_name = $2, 
-                last_name = $3, 
-                address = $4, 
-                date_of_sign = $5, 
-                updated_at = $6, 
-                card_id = $7
-            WHERE member_id = $8`,
-            [
-                data.company,
-                data.firstName,
-                data.lastName,
-                data.address,
-                data.dateOfSign,
-                data.updated_at,
-                data.cardid,
-                param 
-            ]
-        );
+
+        delete data.member_id
+        delete data.teamname
+        delete data.team_id
+        delete data.comp_name_eng
+        delete data.comp_name_thai
+
+        const columns = Object.keys(data);
+        const values = Object.values(data);
+
+        const setClause = columns.map((column, index) => `${column} = $${index + 1}`).join(',');
+
+        const query = `UPDATE members SET ${setClause} WHERE member_id = $${columns.length + 1}`;
+        values.push(param)
+
+        await pool.query(query,values);
 
         return res.json({
             message: "Member has been updated successfully",

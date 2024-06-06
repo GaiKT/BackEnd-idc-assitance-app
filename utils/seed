@@ -285,17 +285,6 @@ CREATE TABLE checklistPhase2 (
     ups2_vbatt FLOAT NOT NULL,
     ups2_ibatt FLOAT NOT NULL,
     ups2_remaining FLOAT NOT NULL,
-    -- airdb
-    airdb BOOLEAN NOT NULL,
-    airdb_l1 FLOAT NOT NULL,
-    airdb_l2 FLOAT NOT NULL,
-    airdb_l3 FLOAT NOT NULL,
-    airdb_i1 FLOAT NOT NULL,
-    airdb_i2 FLOAT NOT NULL,
-    airdb_i3 FLOAT NOT NULL,
-    airdb_power FLOAT NOT NULL,
-    airdb_meter FLOAT NOT NULL,
-    airdb_in FLOAT NOT NULL,
     -- air pac 
     pac1 BOOLEAN NOT NULL,
     setpoint_pac1_temp FLOAT,
