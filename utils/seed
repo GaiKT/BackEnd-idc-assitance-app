@@ -477,17 +477,21 @@ CREATE TABLE checklistTransformer (
     sw_in1 BOOLEAN NOT NULL,
     sw_ground_in1 BOOLEAN NOT NULL,
     lamp_rmu_in1 BOOLEAN NOT NULL,
+    sw_in1_comment TEXT,
     sw_in2 BOOLEAN NOT NULL,
     sw_ground_in2 BOOLEAN NOT NULL,
     lamp_rmu_in2 BOOLEAN NOT NULL,
+    sw_in2_comment TEXT,
     sw1_out1 BOOLEAN NOT NULL,
     sw2_out1 BOOLEAN NOT NULL,
     sw_ground_out1 BOOLEAN NOT NULL,
     lamp_rmu_out1 BOOLEAN NOT NULL,
+    sw_out1_comment TEXT,
     sw1_out2 BOOLEAN NOT NULL,
     sw2_out2 BOOLEAN NOT NULL,
     sw_ground_out2 BOOLEAN NOT NULL,
     lamp_rmu_out2 BOOLEAN NOT NULL,
+    sw_out2_comment TEXT,
     pressure BOOLEAN NOT NULL,
     -- tr temp 
     tr_ch1 FLOAT NOT NULL,
@@ -495,10 +499,12 @@ CREATE TABLE checklistTransformer (
     tr_ch3 FLOAT NOT NULL,
     tr_room_temp FLOAT NOT NULL,
     tr_room_hum FLOAT NOT NULL,
+    tr_temp_comment TEXT,
     -- fan status 
     Fan_status BOOLEAN,
     tr_temp_alarm BOOLEAN,
     tr_temp_trip BOOLEAN,
+    fan_tr_comment TEXT,
     -- tr memter
     meter FLOAT NOT NULL,
     l1 FLOAT NOT NULL,
@@ -514,17 +520,28 @@ CREATE TABLE checklistTransformer (
     mcb1 BOOLEAN,
     mcb2 BOOLEAN,
     capbank BOOLEAN,
+    status_capbank BOOLEAN,
     -- fan 
+    mode_fan BOOLEAN,
     fan1 BOOLEAN,
     fan2 BOOLEAN,
     fan3 BOOLEAN,
     fan4 BOOLEAN,
+    fan_ver_comment TEXT,
+    -- meter TOU
+    meter_TOU FLOAT NOT NULL,
+    onpeak FLOAT NOT NULL,
+    offpeak FLOAT NOT NULL,
+    all_onpeak FLOAT NOT NULL,
+    all_offpeak FLOAT NOT NULL,   
     -- create time
     created_at TIMESTAMP NOT NULL,
     updated_at TIMESTAMP NOT NULL,
     -- user 
     user_id INT,
     FOREIGN KEY (user_id) REFERENCES users(user_id)  
+    confirm_checklist INT ,
+    FOREIGN KEY (confirm_checklist) REFERENCES users(user_id)  
 );
 
 CREATE TABLE checklistgenerator (
