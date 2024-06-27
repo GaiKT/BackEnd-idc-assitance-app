@@ -118,7 +118,6 @@ companyRouter.put("/:id", async (req, res) => {
 
   const data = {
     ...req.body,
-    updated_at: new Date(),
   };
 
   if (!data) {
@@ -135,7 +134,7 @@ companyRouter.put("/:id", async (req, res) => {
       data: {
         comp_name_eng: data.companyEng,
         comp_name_thai: data.companyThai,
-        team_id: data.team,
+        team_id: Number(data.team),
         updated_at: data.updated_at,
       },
     });

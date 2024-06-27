@@ -23,7 +23,7 @@ aupRouter.get("/", async (req, res) => {
             { address: { contains: keyword, mode: 'insensitive' } },
             { company: { comp_name_eng: { contains: keyword, mode: 'insensitive' } } },
             { company: { comp_name_thai: { contains: keyword, mode: 'insensitive' } } },
-            { company: { team: { teamname: { contains: keyword, mode: 'insensitive' } } } },
+            { company: { team: { team_name: { contains: keyword, mode: 'insensitive' } } } },
           ],
         },
         include: {
@@ -36,7 +36,7 @@ aupRouter.get("/", async (req, res) => {
       });
     } else {
       // Fetch all members with company and team details
-      members = await prisma.member.findMany({
+      members = await prisma.members.findMany({
         include: {
           company: {
             include: {
@@ -200,13 +200,13 @@ aupRouter.post("/", async (req, res) => {
 
     try {
             // Create new member
-            const createdMember = await prisma.member.create({
+            const createdMember = await prisma.members.create({
                 data: {
-                comp_id: newMember.comp_id,
+                comp_id: Number(newMember.comp_id),
                 first_name: newMember.first_name,
                 last_name: newMember.last_name,
                 address: newMember.address,
-                date_of_sign: newMember.date_of_sign,
+                date_of_Sign: new Date(newMember.date_of_sign),
                 card_id: newMember.card_id,
                 },
             });
@@ -229,7 +229,7 @@ aupRouter.put("/:id", async (req, res) => {
 
   try {
     // Check if member exists
-    const existingMember = await prisma.member.findUnique({
+    const existingMember = await prisma.members.findUnique({
       where: {
         member_id: memberId,
       },
@@ -242,16 +242,16 @@ aupRouter.put("/:id", async (req, res) => {
     }
 
     // Update member
-    const updatedMemberData = await prisma.member.update({
+    const updatedMemberData = await prisma.members.update({
       where: {
         member_id: memberId,
       },
       data: {
-        comp_id: updatedMember.comp_id,
+        comp_id: Number(updatedMember.comp_id),
         first_name: updatedMember.first_name,
         last_name: updatedMember.last_name,
         address: updatedMember.address,
-        date_of_sign: updatedMember.date_of_sign,
+        date_of_Sign: new Date(updatedMember.date_of_Sign),
         card_id: updatedMember.card_id,
       },
     });
