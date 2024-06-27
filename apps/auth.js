@@ -1,15 +1,16 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { pool } from "../utils/db.js";
+import { PrismaClient } from '@prisma/client'
+
+const prisma = new PrismaClient()
 
 const authRouter = Router();
 
+//register
 authRouter.post("/register", async (req, res) => {
   const user = {
     ...req.body,
-    created_at: new Date(),
-    updated_at: new Date(),
   };
 
   if(!user){
@@ -23,43 +24,43 @@ authRouter.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(user.password, salt);
 
-    await pool.query(
-      `insert into users ( username, password, firstname, lastname, level, created_at, updated_at)
-      values ($1, $2, $3, $4, $5 , $6 ,$7)`,
-      [
-        user.username,
-        user.password,
-        user.firstname,
-        user.lastname,
-        user.level,
-        user.created_at,
-        user.updated_at,
-      ]
-    );
+    await prisma.users.create({
+      data: {
+        ...user
+      },
+    });
   
-    return res.status(200).json({
+    return res.status(201).json({
       message: "User has been created successfully",
     });
   } catch (error) {
-    return res.status(404).json({
-      message: error,
+    return res.status(500).json({
+      message: 'Could not create user' + error,
     });
   }
 
 });
 
+//login
 authRouter.post("/login", async (req, res) => {
-  const user = await pool.query(`select * from users where username='${req.body.username}'`)
+
+  const { username , password } = req.body
+
+  const user = await prisma.users.findUnique({
+    where: {
+      username,
+    },
+  });
   
-  if (!user.rows[0]) {
+  if (!user) {
     return res.status(404).json({
       message: "user not found",
     });
   }
 
     let passWordNotValid = await bcrypt.compare(
-      req.body.password,
-      user.rows[0].password
+      password,
+      user.password
     );
 
     if (!passWordNotValid) {
@@ -69,11 +70,11 @@ authRouter.post("/login", async (req, res) => {
     }
 
     const token = jwt.sign({
-      id: user.rows[0].user_id,
-      firstName: user.rows[0].firstname,
-      lastName: user.rows[0].lastname,
-      UserName: user.rows[0].username,
-      level: user.rows[0].level
+      id: user.user_id,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      UserName: user.username,
+      level: user.level
     },
       process.env.SECRET_KEY,
     {
@@ -87,11 +88,18 @@ authRouter.post("/login", async (req, res) => {
     });
 });
 
-authRouter.put("/update", async (req, res) => {
+//update
+authRouter.put("/:id", async (req, res) => {
+
+  const user_id = Number(req.params.id)
+
   const user = {
     ...req.body,
-    updated_at: new Date(),
   };
+
+  console.log(user_id)
+  console.log(user)
+
 
   if(!user){
     return res.status(401).json({
@@ -99,54 +107,87 @@ authRouter.put("/update", async (req, res) => {
     });
   }
 
+    // Check if user exists
+  const existingUser = await prisma.users.findUnique({
+    where: {
+      user_id: user_id,
+    },
+  });  
+
+  if (!existingUser) {
+    return res.status(404).json({
+      message: "User not found",
+    });
+  }
+
   try {
-    await pool.query(
-      `insert into users ( username,firstname, lastname, level, updated_at)
-      values ($1, $2, $3, $4, $5 , $6 ,$7)`,
-      [
-        user.username,
-        user.firstname,
-        user.lastname,
-        user.level,
-        user.updated_at,
-      ]
-    );
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+
+    await prisma.users.update({
+      where: {
+        user_id: user_id,
+      },
+      data: {
+        username: user.username,
+        password : user.password,
+        first_name: user.first_name,
+        last_name: user.last_name,
+        level: user.level,
+      },
+    });
   
     return res.status(200).json({
-      message: "User has been created successfully",
+      message: "User has been updated successfully",
     });
   } catch (error) {
-    return res.status(404).json({
-      message: error,
+    return res.status(500).json({
+      message: "Update user error:" + error,
     });
   }
 
 });
 
-authRouter.get("/users" , async (req , res)=> {
-  const keyword = req.query.keyword
-  let users = []
-
+authRouter.get("/users", async (req, res) => {
+  const keyword = req.query.keyword;
+  
   try {
-    if(keyword){
-      users = await pool.query(`SELECT * 
-      FROM users 
-      WHERE username ILIKE $1 OR firstname ILIKE $1 OR lastname ILIKE $1
-      ORDER BY level DESC
-      ` ,[`%${keyword}%`])
-    }else{
-      users = await pool.query(`SELECT * FROM users ORDER BY level DESC`)
+    let users;
+
+    if (keyword) {
+      // Search users by keyword
+      users = await prisma.users.findMany({
+        where: {
+          OR: [
+            { username: { contains: keyword, mode: 'insensitive' } },
+            { first_name: { contains: keyword, mode: 'insensitive' } },
+            { last_name: { contains: keyword, mode: 'insensitive' } },
+          ],
+        },
+        orderBy: {
+          level: 'desc',
+        },
+      });
+    } else {
+      // Fetch all users ordered by level descending
+      users = await prisma.user.findMany({
+        orderBy: {
+          level: 'desc',
+        },
+      });
     }
+
     return res.status(200).json({
-      data : users.rows
+      data: users,
     });
   } catch (error) {
-    return res.status(404).json({
-      message : error
+    console.error("Error fetching users:", error);
+    return res.status(500).json({
+      message: "Internal server error",
     });
   }
-
-})
+});
+  
 
 
 export default authRouter;

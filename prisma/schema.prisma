@@ -1,0 +1,639 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  user_id      Int      @id @default(autoincrement())
+  username     String   @unique
+  password     String
+  level        String
+  first_name   String
+  last_name    String
+  create_at    DateTime @default(now())
+  checklistphase1 ChecklistPhase1[]
+  checklistphase2 ChecklistPhase2[]
+  ChecklistRoomTemp ChecklistRoomTemp[]
+  ChecklistFdc ChecklistFdc[]
+  checklistTransformer checklistTransformer[]
+  ChecklistGenerator ChecklistGenerator[]
+}
+
+model Teams {
+  team_id       Int      @id @default(autoincrement())
+  team_name     String @unique
+  companies    Company[]
+}
+
+model Company { 
+  comp_id         Int      @id @default(autoincrement())
+  team            Teams    @relation(fields: [team_id], references: [team_id])
+  members         Members[]
+  team_id         Int
+  comp_name_eng   String @unique
+  comp_name_thai  String @unique
+  create_at       DateTime @default(now())
+}
+
+model Members {
+  member_id     Int      @id @default(autoincrement())
+  company       Company    @relation(fields: [comp_id], references: [comp_id])
+  comp_id       Int
+  card_id       String @unique
+  first_name    String
+  last_name     String
+  address       String
+  date_of_Sign    DateTime
+  create_at     DateTime @default(now())
+}
+
+model ChecklistPhase1 {
+  id                    Int      @id @default(autoincrement())
+  main_meter            Float
+  atsphase1             Boolean
+  atsphase1_l1          Float
+  atsphase1_l2          Float
+  atsphase1_l3          Float
+  atsphase1_i1          Float
+  atsphase1_i2          Float
+  atsphase1_i3          Float
+  atsphase1_power       Float
+  atsphase1_meter       Float
+  atsphase1_in          Float
+  emdb                  Boolean
+  emdb_l1               Float
+  emdb_l2               Float
+  emdb_l3               Float
+  emdb_i1               Float
+  emdb_i2               Float
+  emdb_i3               Float
+  emdb_power            Float
+  emdb_meter            Float
+  emdb_in               Float
+  ups_db1               Boolean
+  ups_db2               Boolean
+  ups_db3               Boolean
+  ups1                  Boolean
+  ups1_l1               Float
+  ups1_l2               Float
+  ups1_l3               Float
+  ups1_i1               Float
+  ups1_i2               Float
+  ups1_i3               Float
+  ups1_p1               Float
+  ups1_p2               Float
+  ups1_p3               Float
+  ups1_load1            Float
+  ups1_load2            Float
+  ups1_load3            Float
+  ups1_vbatt            Float
+  ups1_ibatt            Float
+  ups1_remaining        Float
+  ups2                  Boolean
+  ups2_l1               Float
+  ups2_l2               Float
+  ups2_l3               Float
+  ups2_i1               Float
+  ups2_i2               Float
+  ups2_i3               Float
+  ups2_p1               Float
+  ups2_p2               Float
+  ups2_p3               Float
+  ups2_load1            Float
+  ups2_load2            Float
+  ups2_load3            Float
+  ups2_vbatt            Float
+  ups2_ibatt            Float
+  ups2_remaining        Float
+  ups3                  Boolean
+  ups3_l1               Float
+  ups3_l2               Float
+  ups3_l3               Float
+  ups3_i1               Float
+  ups3_i2               Float
+  ups3_i3               Float
+  ups3_p1               Float
+  ups3_p2               Float
+  ups3_p3               Float
+  ups3_load1            Float
+  ups3_load2            Float
+  ups3_load3            Float
+  ups3_vbatt            Float
+  ups3_ibatt            Float
+  ups3_remaining        Float
+  fdc1a_status          Boolean
+  fdc1a_alarm           Boolean
+  fdc1b_status          Boolean
+  fdc1b_alarm           Boolean
+  fdc1_comment          String?
+  fdc2a_status          Boolean
+  fdc2a_alarm           Boolean
+  fdc2b_status          Boolean
+  fdc2b_alarm           Boolean
+  fdc2_comment          String?
+  airdb                 Boolean
+  airdb_l1              Float
+  airdb_l2              Float
+  airdb_l3              Float
+  airdb_i1              Float
+  airdb_i2              Float
+  airdb_i3              Float
+  airdb_power           Float
+  airdb_meter           Float
+  airdb_in              Float
+  pac1                  Boolean
+  setpoint_pac1_temp    Float?
+  setpoint_pac1_hum     Float?
+  return_pac1_temp      Float?
+  return_pac1_hum       Float?
+  pac2                  Boolean
+  setpoint_pac2_temp    Float?
+  setpoint_pac2_hum     Float?
+  return_pac2_temp      Float?
+  return_pac2_hum       Float?
+  pac3                  Boolean
+  setpoint_pac3_temp    Float?
+  setpoint_pac3_hum     Float?
+  return_pac3_temp      Float?
+  return_pac3_hum       Float?
+  pac4                  Boolean
+  setpoint_pac4_temp    Float?
+  setpoint_pac4_hum     Float?
+  return_pac4_temp      Float?
+  return_pac4_hum       Float?
+  pac5                  Boolean
+  setpoint_pac5_temp    Float?
+  setpoint_pac5_hum     Float?
+  return_pac5_temp      Float?
+  return_pac5_hum       Float?
+  pac6                  Boolean
+  setpoint_pac6_temp    Float?
+  setpoint_pac6_hum     Float?
+  return_pac6_temp      Float?
+  return_pac6_hum       Float?
+  pac7                  Boolean
+  setpoint_pac7_temp    Float?
+  setpoint_pac7_hum     Float?
+  return_pac7_temp      Float?
+  return_pac7_hum       Float?
+  pac8                  Boolean
+  setpoint_pac8_temp    Float?
+  setpoint_pac8_hum     Float?
+  return_pac8_temp      Float?
+  return_pac8_hum       Float?
+  waterleak_normal      Boolean
+  cablefualt            Boolean
+  leak                  Boolean
+  vesda                 Boolean
+  vesda_barlevel        Int
+  firesystem_ac_source  Boolean
+  firesystem_alarmzone  Boolean
+  novac_u1              Boolean
+  novac_u2              Boolean
+  novac_u3              Boolean
+  novac_u4              Boolean
+  novac_u5              Boolean
+  tvss_pa               Boolean
+  tvss_pb               Boolean
+  tvss_pc               Boolean
+  cctv_playback30day    Boolean
+  cctv_camera           Boolean
+  cctv_status           Boolean
+  cctv_remote           Boolean
+  cctv_check            Boolean
+  ems_check             Boolean
+  access_control_check  Boolean
+  phase_check           Boolean
+  phase_comment         String?
+  sw1_jd992a_check      Boolean
+  sw2_jd992a_check      Boolean
+  sw3_jd9663a_check     Boolean
+  sw4_jd9663a_check     Boolean
+  ems_cpu_usage         Float
+  ems_memory_usage      Float
+  ems_c_total           Float
+  ems_c_free            Float
+  ems_c_percent         Float
+  ems_d_total           Float
+  ems_d_free            Float
+  ems_d_percent         Float
+  ems_synctime          Boolean
+  backupvm_c_total      Float
+  backupvm_c_free       Float
+  backupvm_c_percent    Float
+  backupvm_d_total      Float
+  backupvm_d_free       Float
+  backupvm_d_percent    Float
+  backupvm_synctime     Boolean
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+  user_id               Int
+  user                  Users?    @relation(fields: [user_id], references: [user_id])
+}
+
+model ChecklistPhase2 {
+  id                    Int      @id @default(autoincrement())
+  main_meter            Float
+  atsphase2             Boolean
+  atsphase2_l1          Float
+  atsphase2_l2          Float
+  atsphase2_l3          Float
+  atsphase2_i1          Float
+  atsphase2_i2          Float
+  atsphase2_i3          Float
+  atsphase2_power       Float
+  atsphase2_meter       Float
+  atsphase2_in          Float
+  emdb                  Boolean
+  emdb_l1               Float
+  emdb_l2               Float
+  emdb_l3               Float
+  emdb_i1               Float
+  emdb_i2               Float
+  emdb_i3               Float
+  emdb_power            Float
+  emdb_meter            Float
+  emdb_in               Float
+  udb1                  Boolean
+  udb1_l1               Float
+  udb1_l2               Float
+  udb1_l3               Float
+  udb1_i1               Float
+  udb1_i2               Float
+  udb1_i3               Float
+  udb1_power            Float
+  udb1_meter            Float
+  udb1_in               Float
+  udb2                  Boolean
+  udb2_l1               Float
+  udb2_l2               Float
+  udb2_l3               Float
+  udb2_i1               Float
+  udb2_i2               Float
+  udb2_i3               Float
+  udb2_power            Float
+  udb2_meter            Float
+  udb2_in               Float
+  fac_inet_rst          Boolean
+  fac_inet_vavg         Float
+  fac_inet_iavg         Float
+  fac_inet_plot         Float
+  fac_inet_edel         Float
+  fac_thaisarn_rst      Boolean
+  fac_thaisarn_vavg     Float
+  fac_thaisarn_iavg     Float
+  fac_thaisarn_plot     Float
+  fac_thaisarn_edel     Float
+  ups1                  Boolean
+  ups1_l1               Float
+  ups1_l2               Float
+  ups1_l3               Float
+  ups1_i1               Float
+  ups1_i2               Float
+  ups1_i3               Float
+  ups1_p1               Float
+  ups1_p2               Float
+  ups1_p3               Float
+  ups1_load1            Float
+  ups1_load2            Float
+  ups1_load3            Float
+  ups1_vbatt            Float
+  ups1_ibatt            Float
+  ups1_remaining        Float
+  ups2                  Boolean
+  ups2_l1               Float
+  ups2_l2               Float
+  ups2_l3               Float
+  ups2_i1               Float
+  ups2_i2               Float
+  ups2_i3               Float
+  ups2_p1               Float
+  ups2_p2               Float
+  ups2_p3               Float
+  ups2_load1            Float
+  ups2_load2            Float
+  ups2_load3            Float
+  ups2_vbatt            Float
+  ups2_ibatt            Float
+  ups2_remaining        Float
+  ups3                  Boolean
+  ups3_l1               Float
+  ups3_l2               Float
+  ups3_l3               Float
+  ups3_i1               Float
+  ups3_i2               Float
+  ups3_i3               Float
+  ups3_p1               Float
+  ups3_p2               Float
+  ups3_p3               Float
+  ups3_load1            Float
+  ups3_load2            Float
+  ups3_load3            Float
+  ups3_vbatt            Float
+  ups3_ibatt            Float
+  ups3_remaining        Float
+  fdc1a_status          Boolean
+  fdc1a_alarm           Boolean
+  fdc1b_status          Boolean
+  fdc1b_alarm           Boolean
+  fdc1_comment          String?
+  fdc2a_status          Boolean
+  fdc2a_alarm           Boolean
+  fdc2b_status          Boolean
+  fdc2b_alarm           Boolean
+  fdc2_comment          String?
+  airdb                 Boolean
+  airdb_l1              Float
+  airdb_l2              Float
+  airdb_l3              Float
+  airdb_i1              Float
+  airdb_i2              Float
+  airdb_i3              Float
+  airdb_power           Float
+  airdb_meter           Float
+  airdb_in              Float
+  pac1                  Boolean
+  setpoint_pac1_temp    Float?
+  setpoint_pac1_hum     Float?
+  return_pac1_temp      Float?
+  return_pac1_hum       Float?
+  pac2                  Boolean
+  setpoint_pac2_temp    Float?
+  setpoint_pac2_hum     Float?
+  return_pac2_temp      Float?
+  return_pac2_hum       Float?
+  pac3                  Boolean
+  setpoint_pac3_temp    Float?
+  setpoint_pac3_hum     Float?
+  return_pac3_temp      Float?
+  return_pac3_hum       Float?
+  pac4                  Boolean
+  setpoint_pac4_temp    Float?
+  setpoint_pac4_hum     Float?
+  return_pac4_temp      Float?
+  return_pac4_hum       Float?
+  pac5                  Boolean
+  setpoint_pac5_temp    Float?
+  setpoint_pac5_hum     Float?
+  return_pac5_temp      Float?
+  return_pac5_hum       Float?
+  pac6                  Boolean
+  setpoint_pac6_temp    Float?
+  setpoint_pac6_hum     Float?
+  return_pac6_temp      Float?
+  return_pac6_hum       Float?
+  pac7                  Boolean
+  setpoint_pac7_temp    Float?
+  setpoint_pac7_hum     Float?
+  return_pac7_temp      Float?
+  return_pac7_hum       Float?
+  pac8                  Boolean
+  setpoint_pac8_temp    Float?
+  setpoint_pac8_hum     Float?
+  return_pac8_temp      Float?
+  return_pac8_hum       Float?
+  waterleak_normal      Boolean
+  cablefualt            Boolean
+  leak                  Boolean
+  vesda                 Boolean
+  vesda_barlevel        Int
+  firesystem_ac_source  Boolean
+  firesystem_alarmzone  Boolean
+  novac_u1              Boolean
+  novac_u2              Boolean
+  novac_u3              Boolean
+  novac_u4              Boolean
+  novac_u5              Boolean
+  tvss_pa               Boolean
+  tvss_pb               Boolean
+  tvss_pc               Boolean
+  cctv_playback30day    Boolean
+  cctv_camera           Boolean
+  cctv_status           Boolean
+  cctv_remote           Boolean
+  cctv_check            Boolean
+  ems_check             Boolean
+  access_control_check  Boolean
+  phase_check           Boolean
+  phase_comment         String?
+  sw1_jd992a_check      Boolean
+  sw2_jd992a_check      Boolean
+  sw3_jd9663a_check     Boolean
+  sw4_jd9663a_check     Boolean
+  ems_cpu_usage         Float
+  ems_memory_usage      Float
+  ems_c_total           Float
+  ems_c_free            Float
+  ems_c_percent         Float
+  ems_d_total           Float
+  ems_d_free            Float
+  ems_d_percent         Float
+  ems_synctime          Boolean
+  backupvm_c_total      Float
+  backupvm_c_free       Float
+  backupvm_c_percent    Float
+  backupvm_d_total      Float
+  backupvm_d_free       Float
+  backupvm_d_percent    Float
+  backupvm_synctime     Boolean
+  created_at            DateTime @default(now())
+  updated_at            DateTime @updatedAt
+  user_id               Int
+  user                  Users?    @relation(fields: [user_id], references: [user_id])
+}
+
+model ChecklistRoomTemp {
+  id                  Int      @id @default(autoincrement())
+  TempDetector_1_temp Float?
+  TempDetector_1_hum  Float?
+  TempDetector_2_temp Float?
+  TempDetector_2_hum  Float?
+  TempDetector_3_temp Float?
+  TempDetector_3_hum  Float?
+  TempDetector_4_temp Float?
+  TempDetector_4_hum  Float?
+  TempDetector_5_temp Float?
+  TempDetector_5_hum  Float?
+  TempDetector_6_temp Float?
+  TempDetector_6_hum  Float?
+  TempDetector_7_temp Float?
+  TempDetector_7_hum  Float?
+  TempDetector_8_temp Float?
+  TempDetector_8_hum  Float?
+  TempDetector_9_temp Float?
+  TempDetector_9_hum  Float?
+  TempDetector_10_temp Float?
+  TempDetector_10_hum  Float?
+  TempDetector_11_temp Float?
+  TempDetector_11_hum  Float?
+  TempDetector_12_temp Float?
+  TempDetector_12_hum  Float?
+  TempDetector_13_temp Float?
+  TempDetector_13_hum  Float?
+  TempDetector_14_temp Float?
+  TempDetector_14_hum  Float?
+  TempDetector_15_temp Float?
+  TempDetector_15_hum  Float?
+  TempDetector_16_temp Float?
+  TempDetector_16_hum  Float?
+  TempDetector_17_temp Float?
+  TempDetector_17_hum  Float?
+  TempDetector_18_temp Float?
+  TempDetector_18_hum  Float?
+  TempDetector_19_temp Float?
+  TempDetector_19_hum  Float?
+  TempDetector_20_temp Float?
+  TempDetector_20_hum  Float?
+  TempDetector_21_temp Float?
+  TempDetector_21_hum  Float?
+  TempDetector_22_temp Float?
+  TempDetector_22_hum  Float?
+  TempDetector_23_temp Float?
+  TempDetector_23_hum  Float?
+  TempDetector_24_temp Float?
+  TempDetector_24_hum  Float?
+  phase1              Boolean
+  phase2              Boolean
+  Alart               String?
+  outside_temp        Float
+  outside_hum         Float
+  tr_room_temp        Float
+  tr_room_hum         Float
+  tr_ch1              Float
+  tr_ch2              Float
+  tr_ch3              Float
+  fan1                Boolean?
+  fan2                Boolean?
+  fan3                Boolean?
+  fan4                Boolean?
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  user_id             Int
+  user                Users?    @relation(fields: [user_id], references: [user_id])
+}
+
+model ChecklistFdc {
+  id          Int      @id @default(autoincrement())
+  fdc_phase1  Float
+  fdc_phase2  Float
+  fdc_comment String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  user_id     Int
+  user        Users?    @relation(fields: [user_id], references: [user_id])
+}
+
+model checklistTransformer {
+  id              Int       @id @default(autoincrement())
+  sw_in1          Boolean
+  sw_ground_in1   Boolean
+  lamp_rmu_in1    Boolean
+  sw_in1_comment  String?
+  sw_in2          Boolean
+  sw_ground_in2   Boolean
+  lamp_rmu_in2    Boolean
+  sw_in2_comment  String?
+  sw1_out1        Boolean
+  sw2_out1        Boolean
+  sw_ground_out1  Boolean
+  lamp_rmu_out1   Boolean
+  sw_out1_comment String?
+  sw1_out2        Boolean
+  sw2_out2        Boolean
+  sw_ground_out2  Boolean
+  lamp_rmu_out2   Boolean
+  sw_out2_comment String?
+  pressure        Boolean
+  tr_ch1          Float
+  tr_ch2          Float
+  tr_ch3          Float
+  tr_room_temp    Float
+  tr_room_hum     Float
+  tr_temp_comment String?
+  fan_status      Boolean?
+  tr_temp_alarm   Boolean
+  tr_temp_trip    Boolean
+  fan_tr_comment  String?
+  meter           Float
+  l1              Float
+  l2              Float
+  l3              Float
+  i1              Float
+  i2              Float
+  i3              Float
+  pf              Float
+  main_mcb        Boolean
+  db1             Boolean
+  db2             Boolean
+  mcb1            Boolean
+  mcb2            Boolean
+  capbank         Boolean
+  status_capbank  Boolean
+  mode_fan        Boolean
+  fan1            Boolean?
+  fan2            Boolean?
+  fan3            Boolean?
+  fan4            Boolean?
+  fan_ver_comment String?
+  meter_TOU       Float
+  onpeak          Float
+  offpeak         Float
+  all_onpeak      Float
+  all_offpeak     Float
+  created_at      DateTime
+  updated_at      DateTime
+  user_id         Int
+  user            Users?     @relation(fields: [user_id], references: [user_id])
+}
+
+model ChecklistGenerator {
+  id          Int       @id @default(autoincrement())
+  generator_name  String
+  ats_meter_unit  Float?
+  around_check    Boolean?
+  batt_check      Boolean?
+  batt_connection_check Boolean?
+  volt_batt_check Float?
+  fuel_value_check Float?
+  fuel_leak_check Boolean?
+  oil_value_check Boolean?
+  oil_leak_check Boolean?
+  cooler_check Boolean?
+  filter_cooler_check Boolean?
+  fan_cooler_check Boolean?
+  cooler_leak_check Boolean?
+  airduct_check Boolean?
+  airfilter_condition_check Boolean?
+  electic_junction_check Boolean?
+  electic_insulation_check Boolean?
+  ground_check Boolean?
+  electic_panel_check Boolean?
+  time_start     DateTime?
+  engine_check   Boolean?
+  afterstart_junction_check Boolean?
+  afterstart_insulation_check Boolean?
+  l1            Float?
+  l2            Float?
+  l3            Float?
+  i1            Float?
+  i2            Float?
+  i3            Float?
+  frequency     Float?
+  rpm           Float?
+  voltbatt      Float?
+  enginetemp    Float?
+  cooldown      Float?
+  comment       String?
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+  user_id       Int
+  User          Users?      @relation(fields: [user_id], references: [user_id])
+}
+
+
+
+
