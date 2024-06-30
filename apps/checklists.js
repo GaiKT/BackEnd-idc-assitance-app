@@ -5,7 +5,7 @@ import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 const checklistsRouter = Router();
-checklistsRouter.use(protect);
+// checklistsRouter.use(protect);
 
 checklistsRouter.get('/:checklistName', async (req, res) => {
     try {
@@ -60,6 +60,7 @@ checklistsRouter.get('/:checklistName', async (req, res) => {
     }
 });
 
+
 checklistsRouter.post('/fdc', async (req, res) => {
     
   try {
@@ -92,7 +93,7 @@ checklistsRouter.post('/fdc', async (req, res) => {
 });
 
 
-checklistsRouter.put('/', async (req, res) => {
+checklistsRouter.put('/fdc/:id', async (req, res) => {
     try {
       const { id, name, formData } = req.body;
   
@@ -133,7 +134,82 @@ checklistsRouter.put('/', async (req, res) => {
     } finally {
       await prisma.$disconnect();
     }
-  });
+});
+
+//checklist roomTemp
+checklistsRouter.get('/roomtemp', async (req, res) => {
+  try {
+    const checklists = await prisma.checklistRoomTemp.findMany({
+      include: {
+        user: {
+          select: {
+            first_name: true,
+          },
+        },
+      },
+      orderBy: {
+        created_at: 'desc',
+      },
+    });
+
+    res.status(200).json(checklists); // Send the retrieved data
+  } catch (error) {
+    res.status(400).json({ message: 'Unable to retrieve room temperature checklists: ' + error.message });
+  }
+});
+
+
+checklistsRouter.post('/roomtemp', async (req, res) => {
+  const data = req.body;
+
+  if(!data){
+    return res.status(404).json({ message: 'Update failed : please check in put data' + error});
+  }
+  
+  //change string to float
+  for( let i in data) {
+    if(i.includes("TempDetector") | i.includes("outside") | i.includes("tr_") ){
+      data[`${i}`] = parseFloat(data[i])
+    }
+  }
+
+  try {
+    await prisma.checklistRoomTemp.create({
+      data: data,
+    });
+    res.status(201).json({message : 'Send Roomtemp Checklists Complete'});
+  } catch (error) {
+    res.status(400).json({ message: 'Unable to create record' + error });
+  }
+});
+
+checklistsRouter.put('/roomtemp/:id', async (req, res) => {
+  const id = req.params.id
+  const data = req.body;
+
+  if(!data){
+    return res.status(404).json({ message: 'Update failed : please check input data' + error});
+  }
+  
+  //change string to float
+  for( let i in data) {
+    if(i.includes("TempDetector") | i.includes("outside") | i.includes("tr_") ){
+      data[`${i}`] = parseFloat(data[i])
+    }
+  }
+
+  try {
+    await prisma.checklistRoomTemp.update({
+      where: {
+        id: Number(id),
+      },
+      data: data,
+    });
+    return res.status(201).json({message : 'Send Update Roomtemp Checklists Complete'});
+  } catch (error) {
+    return res.status(400).json({ message: 'Update failed' + error });
+  }
+});
 
 
 export default checklistsRouter;
