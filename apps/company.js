@@ -1,11 +1,11 @@
 import { Router } from "express";
-// import {protect} from "../middlewares/protect.js"
+import {protect} from "../middlewares/protect.js"
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
 const companyRouter = Router();
-// companyRouter.use(protect)
+companyRouter.use(protect)
 
 companyRouter.post('/teams', async (req, res) => {
   const { teamname } = req.body;

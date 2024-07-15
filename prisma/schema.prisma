@@ -200,6 +200,7 @@ model ChecklistPhase1 {
   tvss_pa               Boolean
   tvss_pb               Boolean
   tvss_pc               Boolean
+  tvss_comment          String?
   cctv_playback30day    Boolean
   cctv_camera           Boolean
   cctv_status           Boolean
@@ -222,6 +223,8 @@ model ChecklistPhase1 {
   ems_d_free            Float
   ems_d_percent         Float
   ems_synctime          Boolean
+  backupvm_cpu_usage         Float
+  backupvm_memory_usage      Float
   backupvm_c_total      Float
   backupvm_c_free       Float
   backupvm_c_percent    Float
@@ -320,22 +323,6 @@ model ChecklistPhase2 {
   ups2_vbatt            Float
   ups2_ibatt            Float
   ups2_remaining        Float
-  ups3                  Boolean
-  ups3_l1               Float
-  ups3_l2               Float
-  ups3_l3               Float
-  ups3_i1               Float
-  ups3_i2               Float
-  ups3_i3               Float
-  ups3_p1               Float
-  ups3_p2               Float
-  ups3_p3               Float
-  ups3_load1            Float
-  ups3_load2            Float
-  ups3_load3            Float
-  ups3_vbatt            Float
-  ups3_ibatt            Float
-  ups3_remaining        Float
   fdc1a_status          Boolean
   fdc1a_alarm           Boolean
   fdc1b_status          Boolean
@@ -386,16 +373,6 @@ model ChecklistPhase2 {
   setpoint_pac6_hum     Float?
   return_pac6_temp      Float?
   return_pac6_hum       Float?
-  pac7                  Boolean
-  setpoint_pac7_temp    Float?
-  setpoint_pac7_hum     Float?
-  return_pac7_temp      Float?
-  return_pac7_hum       Float?
-  pac8                  Boolean
-  setpoint_pac8_temp    Float?
-  setpoint_pac8_hum     Float?
-  return_pac8_temp      Float?
-  return_pac8_hum       Float?
   waterleak_normal      Boolean
   cablefualt            Boolean
   leak                  Boolean
@@ -411,6 +388,7 @@ model ChecklistPhase2 {
   tvss_pa               Boolean
   tvss_pb               Boolean
   tvss_pc               Boolean
+  tvss_comment          String?
   cctv_playback30day    Boolean
   cctv_camera           Boolean
   cctv_status           Boolean
@@ -420,10 +398,10 @@ model ChecklistPhase2 {
   access_control_check  Boolean
   phase_check           Boolean
   phase_comment         String?
-  sw1_jd992a_check      Boolean
-  sw2_jd992a_check      Boolean
-  sw3_jd9663a_check     Boolean
-  sw4_jd9663a_check     Boolean
+  sw1_jd96634_check      Boolean
+  sw2_jd96634_check      Boolean
+  sw3_1616e_check     Boolean
+  sw4_1616e_check     Boolean
   ems_cpu_usage         Float
   ems_memory_usage      Float
   ems_c_total           Float
@@ -433,6 +411,8 @@ model ChecklistPhase2 {
   ems_d_free            Float
   ems_d_percent         Float
   ems_synctime          Boolean
+  backupvm_cpu_usage    Float
+  backupvm_memory_usage Float
   backupvm_c_total      Float
   backupvm_c_free       Float
   backupvm_c_percent    Float
@@ -572,7 +552,6 @@ model checklistTransformer {
   mcb1            Boolean
   mcb2            Boolean
   capbank         Boolean
-  status_capbank  Boolean
   mode_fan        Boolean
   fan1            Boolean?
   fan2            Boolean?
@@ -584,8 +563,8 @@ model checklistTransformer {
   offpeak         Float
   all_onpeak      Float
   all_offpeak     Float
-  created_at      DateTime
-  updated_at      DateTime
+  created_at      DateTime @default(now())
+  updated_at      DateTime @updatedAt
   user_id         Int
   user            Users?     @relation(fields: [user_id], references: [user_id])
 }
@@ -593,47 +572,43 @@ model checklistTransformer {
 model ChecklistGenerator {
   id          Int       @id @default(autoincrement())
   generator_name  String
-  ats_meter_unit  Float?
-  around_check    Boolean?
-  batt_check      Boolean?
-  batt_connection_check Boolean?
-  volt_batt_check Float?
-  fuel_value_check Float?
-  fuel_leak_check Boolean?
-  oil_value_check Boolean?
-  oil_leak_check Boolean?
-  cooler_check Boolean?
-  filter_cooler_check Boolean?
-  fan_cooler_check Boolean?
-  cooler_leak_check Boolean?
-  airduct_check Boolean?
-  airfilter_condition_check Boolean?
-  electic_junction_check Boolean?
-  electic_insulation_check Boolean?
-  ground_check Boolean?
-  electic_panel_check Boolean?
-  time_start     DateTime?
-  engine_check   Boolean?
-  afterstart_junction_check Boolean?
-  afterstart_insulation_check Boolean?
-  l1            Float?
-  l2            Float?
-  l3            Float?
-  i1            Float?
-  i2            Float?
-  i3            Float?
-  frequency     Float?
-  rpm           Float?
-  voltbatt      Float?
-  enginetemp    Float?
-  cooldown      Float?
+  ats_meter_unit  Float
+  around_check    Boolean
+  batt_check      Boolean
+  batt_connection_check Boolean
+  volt_batt_check Float
+  fuel_value_check Float
+  fuel_leak_check Boolean
+  oil_value_check Boolean
+  oil_leak_check Boolean
+  cooler_check Boolean
+  filter_cooler_check Boolean
+  fan_cooler_check Boolean
+  cooler_leak_check Boolean
+  airduct_check Boolean
+  airfilter_condition_check Boolean
+  electic_junction_check Boolean
+  electic_insulation_check Boolean
+  ground_check Boolean
+  electic_panel_check Boolean
+  time_start     String
+  engine_check   Boolean
+  afterstart_junction_check Boolean
+  afterstart_insulation_check Boolean
+  l1            Float
+  l2            Float
+  l3            Float
+  i1            Float
+  i2            Float
+  i3            Float
+  frequency     Float
+  rpm           Float
+  voltbatt      Float
+  enginetemp    Float
+  cooldown      Float
   comment       String?
   created_at    DateTime @default(now())
   updated_at    DateTime @updatedAt
   user_id       Int
-  User          Users?      @relation(fields: [user_id], references: [user_id])
+  user          Users?      @relation(fields: [user_id], references: [user_id])
 }
-
-
-
-

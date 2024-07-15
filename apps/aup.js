@@ -4,7 +4,7 @@ import {protect} from "../middlewares/protect.js"
 
 const prisma = new PrismaClient()
 const aupRouter = Router();
-// aupRouter.use(protect)
+aupRouter.use(protect)
 
 
 aupRouter.get("/", async (req, res) => {
