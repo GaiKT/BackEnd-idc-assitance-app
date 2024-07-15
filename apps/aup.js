@@ -93,7 +93,7 @@ aupRouter.get("/company", async (req, res) => {
       // Fetch new members weekly
       const resultNewMembersWeekly = await prisma.members.findMany({
         where: {
-          date_of_sign: {
+          date_of_Sign: {
             gte: new Date(new Date().setDate(new Date().getDate() - 6)), // Date of sign within the last 7 days
             lte: new Date(), // Today's date
           },
@@ -106,22 +106,19 @@ aupRouter.get("/company", async (req, res) => {
               comp_name_thai: true,
               team: {
                 select: {
-                  teamname: true,
+                  team_name: true,
                   team_id: true,
                 },
               },
             },
           },
         },
-        orderBy: {
-          team_id: 'asc',
-        },
       });
   
       // Fetch new companies created weekly
       const resultNewCompanyWeekly = await prisma.company.findMany({
         where: {
-          created_at: {
+          create_at: {
             gte: new Date(new Date().setDate(new Date().getDate() - 6)), // Companies created within the last 7 days
             lte: new Date(), // Today's date
           },
@@ -129,7 +126,7 @@ aupRouter.get("/company", async (req, res) => {
         include: {
           team: {
             select: {
-              teamname: true,
+              team_name: true,
             },
           },
         },
