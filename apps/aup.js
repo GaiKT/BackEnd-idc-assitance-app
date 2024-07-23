@@ -86,9 +86,9 @@ aupRouter.get("/company", async (req, res) => {
         message: "Internal server error",
       });
     }
-  });
+});
   
-  aupRouter.get("/new-members-weekly", async (req, res) => {
+aupRouter.get("/new-members-weekly", async (req, res) => {
     try {
       // Fetch new members weekly
       const resultNewMembersWeekly = await prisma.members.findMany({
@@ -181,7 +181,7 @@ aupRouter.get("/company", async (req, res) => {
     } finally {
       await prisma.$disconnect();
     }
-  });
+});
   
 
 // create members
