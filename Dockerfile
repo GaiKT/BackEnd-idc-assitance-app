@@ -21,7 +21,6 @@ RUN npm install pg
 COPY . .
 
 # Run the migration during the Docker build process
-RUN npx prisma migrate dev --name init
 RUN npx prisma generate
 
 # Expose the backend port (adjust if necessary)
