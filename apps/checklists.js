@@ -474,7 +474,10 @@ checklistsRouter.post('/phase2', async (req, res) => {
 
   try {
     await prisma.checklistPhase2.create({
-      data: data,
+      data: {
+        ...data,
+        vesda_barlevel : parseInt(data.vesda_barlevel)
+      },
     });
     res.status(201).json({message : 'Send Phase2 Checklists Complete'});
   } catch (error) {
@@ -504,8 +507,6 @@ checklistsRouter.put('/phase2/:id', async (req, res) => {
     delete data.id;
     delete data.updated_at;
     delete data.user;
-
-    console.log(data)
 
   try {
     await prisma.checklistPhase2.update({

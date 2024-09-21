@@ -170,7 +170,7 @@ authRouter.get("/users", async (req, res) => {
       });
     } else {
       // Fetch all users ordered by level descending
-      users = await prisma.user.findMany({
+      users = await prisma.users.findMany({
         orderBy: {
           level: 'desc',
         },
