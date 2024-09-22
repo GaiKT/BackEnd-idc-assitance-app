@@ -20,6 +20,9 @@ RUN npm install pg
 # Copy the rest of the application code
 COPY . .
 
+# npx prisma generate
+RUN npx prisma generate
+
 # Expose the backend port (adjust if necessary)
 EXPOSE 4000
 
