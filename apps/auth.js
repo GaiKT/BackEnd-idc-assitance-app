@@ -89,7 +89,7 @@ authRouter.post("/login", async (req, res) => {
 });
 
 //update
-authRouter.put("/:id", async (req, res) => {
+authRouter.put("/edit/:id", async (req, res) => {
 
   const user_id = Number(req.params.id)
 
@@ -97,13 +97,9 @@ authRouter.put("/:id", async (req, res) => {
     ...req.body,
   };
 
-  console.log(user_id)
-  console.log(user)
-
-
   if(!user){
     return res.status(401).json({
-      message: "update faild this not request data",
+      message: "update failed this not request data",
     });
   }
 
@@ -121,19 +117,14 @@ authRouter.put("/:id", async (req, res) => {
   }
 
   try {
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
 
     await prisma.users.update({
       where: {
         user_id: user_id,
       },
       data: {
-        username: user.username,
-        password : user.password,
         first_name: user.first_name,
         last_name: user.last_name,
-        level: user.level,
       },
     });
   
@@ -143,6 +134,69 @@ authRouter.put("/:id", async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Update user error:" + error,
+    });
+  }
+
+});
+
+//reset password
+authRouter.put("/resetPassword/:id", async (req, res) => {
+
+  const user_id = Number(req.params.id)
+
+  const user = {
+    ...req.body,
+  };
+
+  if(!user){
+    return res.status(401).json({
+      message: "update failed this not request data",
+    });
+  }
+
+    // Check if user exists
+  const existingUser = await prisma.users.findUnique({
+    where: {
+      user_id: user_id,
+    },
+  });  
+
+  if (!existingUser) {
+    return res.status(404).json({
+      message: "User not found",
+    });
+  }
+
+  const passWordNotValid = await bcrypt.compare(
+    user.old_password,
+    existingUser.password
+  );
+
+  if (!passWordNotValid) {
+    return res.status(404).json({
+      message: "Old password not match",
+    });
+  }
+
+  try {
+    const salt = await bcrypt.genSalt(10);
+    user.password = await bcrypt.hash(user.password, salt);
+
+    await prisma.users.update({
+      where: {
+        user_id: user_id,
+      },
+      data: {
+        password : user.password,
+      },
+    });
+  
+    return res.status(200).json({
+      message: "Password updated successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "Update password error:" + error,
     });
   }
 
